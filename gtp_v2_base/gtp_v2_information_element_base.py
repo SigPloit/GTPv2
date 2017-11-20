@@ -67,6 +67,7 @@ class InformationElementBase(object):
     def get_total_len(self):
         return self.__len + 4
 
+
 class UserLocationInformation(InformationElementBase) :
     def __init__(self, mcc = "222", mnc = "01", lac = 0x00, sac = 0x00, 
                  tac = 0x00, rac = 0x00, cgi = 0x00, ecgi = 0x00):
@@ -114,9 +115,7 @@ class UserLocationInformation(InformationElementBase) :
         if self.__ecgi :
             out += self.__ecgi.get_packed_val()
         return out  
-   
-    
-    
+      
 class Imsi (InformationElementBase):    
     
     def __init__(self, imsi = "222015500003199") :
@@ -127,7 +126,6 @@ class Imsi (InformationElementBase):
         self.__len = 8
     
     def __get_val(self):
-
         i = 0
         hex_imsi = ''
         while i < 13 :
@@ -143,7 +141,6 @@ class Imsi (InformationElementBase):
             print "hex imsi:", hex_imsi
         return bytearray.fromhex(hex_imsi)
     
-
 class Msisdn(InformationElementBase):
     def __init__(self, msisdn="393356534399"):
         InformationElementBase.__init__(self, 134)
@@ -328,7 +325,6 @@ class PDNAddressAllocation(InformationElementBase):
         if self.__len == 5:
             return struct.pack('!BL', self.__pdn_type, self.__ip)
         return struct.pack('!B', self.__pdn_type) +  self.__ip              
-
             
 class EPSBearerID(InformationElementBase):
     def __init__(self, ebi = 6):
@@ -339,7 +335,6 @@ class EPSBearerID(InformationElementBase):
         
     def __get_val(self):
         return struct.pack("!B", self.__val)
-
 
 class BearerQoS(InformationElementBase):
     def __init__(self, pci = 0x01, pl = 0x02, pvi = 0x00, qci = 0x07, 
@@ -377,8 +372,6 @@ class BearerContextCreateSessionRequest(InformationElementBase):
         return (self.__ebi.get_packed_ie() + self.__bqos.get_packed_ie() + 
                 self.__teid.get_packed_ie())
         
-        
-      
 class ProtocolConfigurationOptions(InformationElementBase):
     def __init__(self, p_dns = '0.0.0.0', s_dns = '0.0.0.0', pwd = None, 
                  peer_id = None):
@@ -403,3 +396,12 @@ class ProtocolConfigurationOptions(InformationElementBase):
             out += i.get_packed()
         return out
 
+class SuccessCause(InformationElementBase):
+    def __init__(self):
+        InformationElementBase.__init__(self, 2)
+        self.__val = 16
+        self.__len = 2 # 2 bytes
+        self.__spare = 0x00
+        
+    def __get_val(self):
+        return struct.pack("!BB", self.__val, self.__spare)

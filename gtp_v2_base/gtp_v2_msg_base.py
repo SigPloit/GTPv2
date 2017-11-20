@@ -151,11 +151,13 @@ class GTPV2MessageBase(object):
         self.__packed_ie_len = len(packed_ie)
     
     def set_teid(self, teid = bytearray(random.getrandbits(8) for i in range(3))):
-        if teid != 0 :
+        if teid != 0x00 :
             self.__t_flag = 1
-            self.__teid = teid       
-
-
+            self.__teid = teid  
+            self.__hdr_len = 12 
+                 
+    def set_sequence_number(self, sqn):
+        self.__sequence_number = sqn
 
     
 
