@@ -84,7 +84,7 @@ class GTPV2MessageBase(object):
     '''
 
 
-    def __init__(self, msg_type, t = 0x00, p = 0x00):
+    def __init__(self, msg_type, t = 0x00, p = 0x00, sequence = 0x00):
         '''
         Constructor
         '''
@@ -92,8 +92,10 @@ class GTPV2MessageBase(object):
             raise Exception("invalid mesg_type: %s"%(msg_type))
         self.__t_flag = t
         self.__p_flag = p
-        self.__sequence_number = bytearray(random.getrandbits(8) for i in range(3))
-        
+        if sequence == 0x00 :
+            self.__sequence_number = bytearray(random.getrandbits(8) for i in range(3))
+        else :
+            self.__sequence_number
         if (self.__t_flag == 0x00) :
             self.__hdr_len = 8
         else:

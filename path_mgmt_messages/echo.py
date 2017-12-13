@@ -26,9 +26,10 @@ class EchoResponse(GTPV2MessageBase):
     '''
 
 
-    def __init__(self):
+    def __init__(self, seq_num):
         '''
         Constructor
         '''
-        GTPV2MessageBase.__init__(self, GTPmessageTypeDigit['echo-request']) 
+        GTPV2MessageBase.__init__(self, GTPmessageTypeDigit['echo-response'],
+                                  sequence = seq_num) 
         self.add_ie(Recovery(rc = 0))         
