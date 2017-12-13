@@ -21,7 +21,8 @@ import os
 
 from optparse import OptionParser
 from utilities.configuration_parser import *
-
+from utilities.gtp_v2_server_listener import ServerListener
+from utilities.gtpv2_sender_listener import SenderListener
 __all__ = []
 __version__ = 0.1
 
@@ -62,13 +63,15 @@ def main(argv=None):
         # set defaults
         parser.set_defaults(server_mode=False, config_file="", 
                             msg_freq=DEFAULT_SLEEPTIME, is_fuzzy=False,
-                            delay=DEFAULT_SLEEPTIME)
+                            delay=DEFAULT_SLEEPTIME,
+                            verbose = False)
 
         # process options
         (opts, args) = parser.parse_args(argv)
-
+        is_verbose = False
         if opts.verbose > 0:
             print("verbosity level = %d" % opts.verbose)
+            is_verbose = True
         server_mode = opts.server_mode
         is_fuzzy = opts.is_fuzzy
         config_file = opts.config_file
@@ -76,12 +79,15 @@ def main(argv=None):
         delay = opts.delay
         local_ip = opts.local_ip
         remote_ip = opts.remote_ip
-        
+        sleep_time = 0
+        msg = [] ###TO FIX
         # MAIN BODY #
         if opts.config_file != "" :
             config = parseConfigs(opts.config_file)
         else :
             config = None
+        if server_mode :
+            lstn = ServerListener(remote_ip, msgs, is_verbose, msg_freq, sleep_time)
     except Exception, e:
         indent = len(program_name) * " "
         sys.stderr.write(program_name + ": " + repr(e) + "\n")

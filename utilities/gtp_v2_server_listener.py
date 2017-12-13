@@ -13,8 +13,8 @@ from path_managment_listener import PathMgmtListener
 GTP_C_PORT = 2123
 
 class ServerListener(threading.Thread):
-    def __init__(self, server_address, messages, accepted_ips=None,
-                 isVerbose = True, msgs_freq=1, wait_time=20):
+    def __init__(self, peer, messages, isVerbose = True, msgs_freq=1, 
+                 wait_time=20):
         threading.Thread.__init__(self)
         
         self.TAG_NAME = 'GTPV2 SERVER_LISTENER'
@@ -22,17 +22,13 @@ class ServerListener(threading.Thread):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
-        self.sock.bind(server_address, GTP_C_PORT)
+        self.sock.bind('0.0.0.0', GTP_C_PORT)
        
         
-        self.server_address = server_address
+        self.peer = peer
         
         self.is_verbose = isVerbose
         self.messages = messages
-
-        self.accepted_ips = accepted_ips
-        if self.accepted_ips is not None and not isinstance(self.accepted_ips, list):
-            self.accepted_ips = [self.accepted_ips]
         
         self.msgs_freq = msgs_freq
         self.wait_time = wait_time
@@ -72,7 +68,7 @@ class ServerListener(threading.Thread):
         self.lsntPathMgmt.start()
             
         ''' START SENDER CLIENT '''
-        self.lsntSender= SenderListener(self.sock, self.messages,
+        self.lsntSender= SenderListener(self.sock, self.messages, self.peer,
                                             self.is_verbose, self.msgs_freq, 
                                             self.wait_time)            
         self.lsntSender.daemon = True
