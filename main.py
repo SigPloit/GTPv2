@@ -43,8 +43,9 @@ def main(argv=None):
 
     program_version_string = '%%prog %s' % (program_version)
 
-    program_license = "Copyright 2017 Rosalia d'Alessandro                                            \
-                Licensed under the Apache License 2.0\nhttp://www.apache.org/licenses/LICENSE-2.0"
+    program_license = "Copyright 2017 Rosalia d'Alessandro\
+                Licensed under the Apache License 2.0\
+                nhttp://www.apache.org/licenses/LICENSE-2.0"
 
     if argv is None:
         argv = sys.argv[1:]
@@ -57,7 +58,7 @@ def main(argv=None):
         parser.add_option("-m", "--msg-freq", dest="msg_freq", type=int, help="determine the frequency of the messages. Set the sleep time between each message [default: %default]")
         parser.add_option("-d", "--delay", dest="delay", type=int, help="set the sleep time before start sending messages, it is the negotiation time [default: %default]")
         parser.add_option("-f", "--fuzzy", dest="is_fuzzy", action="store_true", help="set if is fuzzy [default: %default]")
-        parser.add_option("-i", "--local_ip", dest="local_ip", help="local ip address")
+        #parser.add_option("-i", "--local_ip", dest="local_ip", help="local ip address")
         parser.add_option("-r", "--remote_ip", dest="remote_ip", help="remote ip address")        
         
         # set defaults
@@ -73,27 +74,33 @@ def main(argv=None):
             print("verbosity level = %d" % opts.verbose)
             is_verbose = True
         server_mode = opts.server_mode
-        is_fuzzy = opts.is_fuzzy
-        config_file = opts.config_file
+        #is_fuzzy = opts.is_fuzzy
         msg_freq = opts.msg_freq
-        delay = opts.delay
-        local_ip = opts.local_ip
+        #local_ip = opts.local_ip
         remote_ip = opts.remote_ip
-        sleep_time = 0
-        msg = [] ###TO FIX
+        sleep_time = opts.delay
+       
         # MAIN BODY #
         if opts.config_file != "" :
             config = parseConfigs(opts.config_file)
         else :
-            config = None
+            print "Error: missed config file"
+            return
+        msgs = config.get_unpacked_messages()
         if server_mode :
             lstn = ServerListener(remote_ip, msgs, is_verbose, msg_freq, sleep_time)
+        else :
+            lstn = SenderListener(None, msgs, remote_ip, is_verbose, msg_freq,
+                                  sleep_time)  
     except Exception, e:
         indent = len(program_name) * " "
         sys.stderr.write(program_name + ": " + repr(e) + "\n")
         sys.stderr.write(indent + "  for help use --help")
         return 2
-
+    lstn.daemon = True
+    lstn.start()
+    lstn.join()
+    lstn.stop()
 
 if __name__ == "__main__":
     if DEBUG:

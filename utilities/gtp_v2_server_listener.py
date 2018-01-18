@@ -36,9 +36,9 @@ class ServerListener(threading.Thread):
         self.lsntPathMgmt= None
         self.lsntSender = None
         
-        signal.signal(signal.SIGQUIT, self.stop)
-        signal.signal(signal.SIGINT, self.stop)
-        signal.signal(signal.SIGTERM, self.stop)
+        signal.signal(signal.SIGQUIT, self.stop())
+        signal.signal(signal.SIGINT, self.stop())
+        signal.signal(signal.SIGTERM, self.stop())
         
     ##
     ## @brief      Determines if the thread is running

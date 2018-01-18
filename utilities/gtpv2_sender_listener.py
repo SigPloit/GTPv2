@@ -24,9 +24,11 @@ class SenderListener(threading.Thread):
             raise Exception("%s :: no messages" % (self.TAG_NAME))             
         
         if open_sock is None :
-            raise Exception("%s :: no connection available" % (self.TAG_NAME))
-        
-        self.sock = open_sock
+            print "Working in client mode"
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        else :
+            print "Working in server mode"
+            self.sock = open_sock
         #self.connection.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         
         self.is_verbose = isVerbose
