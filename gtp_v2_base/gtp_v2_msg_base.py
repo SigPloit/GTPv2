@@ -33,8 +33,9 @@
 # -*- coding: utf-8 -*-
 import random
 import struct
-from gtp_v2_information_elements import *
-from gtp_v2_commons import *
+from gtp_v2_base.gtp_v2_information_element_base import *
+from gtp_v2_base.gtp_v2_commons import *
+from mysql.connector.utils import print_buffer
 '''
 TEID NOT PRESENT
 
@@ -88,27 +89,30 @@ class GTPV2MessageBase(object):
         '''
         Constructor
         '''
-        if not GTPmessageTypeDigit.has_key(msg_type) :
+        if not GTPmessageTypeStr.has_key(msg_type) :
             raise Exception("invalid mesg_type: %s"%(msg_type))
         self.__t_flag = t
         self.__p_flag = p
         if sequence == 0x00 :
-            self.__sequence_number = bytearray(random.getrandbits(8) for i in range(3))
+            self.__sequence_number = 0x01
         else :
-            self.__sequence_number
+            self.__sequence_number = sequence
         if (self.__t_flag == 0x00) :
             self.__hdr_len = 8
         else:
             self.__teid = 0x00000000
             self.__hdr_len = 12            
         self.__packed_ie_len = 0
-        self.__msg_type = GTPmessageTypeDigit[msg_type]
+        self.__msg_type = int(msg_type)
         self.__version = 0x02
         self.__packed_ie= 0x00 # packed data containing all information elements
         self.__ie_array = []   # array containing all the information elements
  
+    def get_msg_type(self):
+        return self.__msg_type 
+         
     def __get_packed_ies(self):
-        self.__packed_ie = 0x00
+        self.__packed_ie = ''
         for ie in self.__ie_array:
             self.__packed_ie += ie.get_packed_ie()
         self.__packed_ie_len = len(self.__packed_ie)
@@ -118,7 +122,7 @@ class GTPV2MessageBase(object):
             self.__ie_array.append(ie)
         
     def get_length(self):
-        return (self.__packed_ie_len + self.__hdr_len)
+        return (self.__packed_ie_len + self.__hdr_len - 4)
               
     def get_hdr_length(self):
         return self.__hdr_len
@@ -134,18 +138,22 @@ class GTPV2MessageBase(object):
     def get_packed_header(self):
         msg_type = struct.pack("!B", self.__msg_type)
         
-        flags = struct.pack("!B", (self.__version << 5) + (self.__t_flag << 4))
+        flags = struct.pack("!B", (self.__version << 5) + (self.__t_flag << 3))
         spare = struct.pack("!B", 0)
-        msg_len = struct.pack("!H", self.__len)
-        
+        msg_len = struct.pack("!H", self.get_length())
+        sqn = struct.pack("!L", self.__sequence_number)[1:]
         out = flags + msg_type + msg_len
         if self.__t_flag :
-            out += self.__teid
-        out += (self.__sequence_number + spare)
+            out += struct.pack("!L",self.__teid)
+        out += (sqn + spare)
         return out    
     
     def get_message(self):
-        return (self.get_packed_header() + self.get_packed_ie())
+        # DO NOT CHANGE THIS ORDER
+        # IT IS IMPORTANT FOR CORRECT MSG LEN CALCULATION
+        payload = self.get_packed_ie()
+        hdr = self.get_packed_header()
+        return (hdr + payload)
     
     
     def set_packed_ie(self, packed_ie):

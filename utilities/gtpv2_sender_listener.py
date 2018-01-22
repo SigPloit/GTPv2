@@ -4,7 +4,8 @@ Created on 12 Dec 2017
 @author: lia
 '''
 import threading
-from socket import socket, timeout
+import errno
+from socket import *
 import time
 
 import errno
@@ -25,7 +26,7 @@ class SenderListener(threading.Thread):
         
         if open_sock is None :
             print "Working in client mode"
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.sock = socket(AF_INET, SOCK_DGRAM)
         else :
             print "Working in server mode"
             self.sock = open_sock
@@ -70,9 +71,13 @@ class SenderListener(threading.Thread):
                 print "%s: Preparing GTP messages"%(self.TAG_NAME)
             mdatas = []
             if self.messages is not None and len(self.messages) > 0:
+                count = 0
                 for m in self.messages:
+                    print "preparing msg #%d - type %d"%(count, m.get_msg_type())
                     mdatas.append(m.get_message())
+                    count += 1
             tot_count = len(mdatas)
+          
             if self.is_verbose: 
                 print "%s: Prepared %d GTP messages"%(self.TAG_NAME, tot_count)
                 
@@ -83,7 +88,8 @@ class SenderListener(threading.Thread):
                     if self.is_verbose:
                         print ("%s: Sending message (#%d of %d)..."
                                %(self.TAG_NAME,curr_count, tot_count))
-                    sent_bytes = self.sock.sendto(data, self.peer, GTP_C_PORT)
+                    print self.peer
+                    sent_bytes = self.sock.sendto(data, (self.peer, GTP_C_PORT))
                     if sent_bytes is not None and sent_bytes > 0:
                         if self.is_verbose: 
                             print "%s: Bytes sent %d"%(self.TAG_NAME, sent_bytes)
@@ -95,7 +101,7 @@ class SenderListener(threading.Thread):
             except timeout, e:
                 print "%s: TIMEOUT_ERROR : %s"%(self.TAG_NAME, e)
                 pass
-            except Exception, e:
+            except error, e:
                 if e.errno == errno.ECONNREFUSED:
                     print "%s: CONNECTION_REFUSED: %s"%(self.TAG_NAME, e)
                 if e.errno == errno.EBADFD:
@@ -107,13 +113,17 @@ class SenderListener(threading.Thread):
                 else:
                     print "%s: UNKNOWN_ERROR: %s"%(self.TAG_NAME, e)
                     pass
-                
-                if self.start_time is not None:
-                    stop_time = time.time()
-                    hours, rem = divmod(stop_time - self.start_time, 3600)
-                    minutes, seconds = divmod(rem, 60)
-                    print "Elapsed time: {:0>2}:{:0>2}:{:05.4f}".format(
-                        int(hours), int(minutes), seconds)
+            except Exception, e:
+                print "%s:GENERIC ERROR : %s"%(self.TAG_NAME, e)
+                pass                               
+            if self.start_time is not None:
+                stop_time = time.time()
+                hours, rem = divmod(stop_time - self.start_time, 3600)
+                minutes, seconds = divmod(rem, 60)
+                print "Elapsed time: {:0>2}:{:0>2}:{:05.4f}".format(
+                    int(hours), int(minutes), seconds)
+
+                        
                 
     ##
     ## @brief      Stops the execution of the thread

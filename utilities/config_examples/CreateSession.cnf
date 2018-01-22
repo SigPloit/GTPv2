@@ -1,8 +1,17 @@
 ##  Begins of GENERIC SECTION  ##
  
 [GENERIC]
-	#Possible values: S5, S8, S5/S8, S11, S13
-	interface = S8
+	#Possible supported values: 
+	# 0: S1-U eNB GTP-U interface
+	# 1: S1-U SGW GTP-U interface
+	# 4: S5/S8 SGW GTP-U interface
+	# 5: S5/S8 PGW GTP-U interface
+	# 6: S5/S8 SGW GTP-C interface
+	# 7: S5/S8 PGW GTP-C interface
+	# 10: S11 MME GTP-C interface
+	# 11: S4/S11 SGW GTP-C interface
+
+	interface = 7
 
     # 1: "echo-request",
     # 2: "echo-response",
@@ -36,7 +45,7 @@
     # 177: "downlink-data-notify-acknowledge",
 
 	#List of path management message's types. 
-	base_message_list = 1,2
+	base_message_list = 1
 	
 	#List of 3gpp message's types
 	3gpp_messages_list = 32, 

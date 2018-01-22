@@ -57,7 +57,7 @@ def main(argv=None):
         parser.add_option("-c", "--config", dest="config_file", help="the configuration file")
         parser.add_option("-m", "--msg-freq", dest="msg_freq", type=int, help="determine the frequency of the messages. Set the sleep time between each message [default: %default]")
         parser.add_option("-d", "--delay", dest="delay", type=int, help="set the sleep time before start sending messages, it is the negotiation time [default: %default]")
-        parser.add_option("-f", "--fuzzy", dest="is_fuzzy", action="store_true", help="set if is fuzzy [default: %default]")
+        parser.add_option("-f", "--fuzzy", dest="is_fuzzy", action="store_false", help="set if is fuzzy [default: %default]")
         #parser.add_option("-i", "--local_ip", dest="local_ip", help="local ip address")
         parser.add_option("-r", "--remote_ip", dest="remote_ip", help="remote ip address")        
         
@@ -71,7 +71,7 @@ def main(argv=None):
         (opts, args) = parser.parse_args(argv)
         is_verbose = False
         if opts.verbose > 0:
-            print("verbosity level = %d" % opts.verbose)
+            #print("verbosity level = %d" % opts.verbose)
             is_verbose = True
         server_mode = opts.server_mode
         #is_fuzzy = opts.is_fuzzy
@@ -81,12 +81,13 @@ def main(argv=None):
         sleep_time = opts.delay
        
         # MAIN BODY #
-        if opts.config_file != "" :
-            config = parseConfigs(opts.config_file)
-        else :
+        if opts.config_file == "" :
             print "Error: missed config file"
-            return
+            return            
+        config = parseConfigs(opts.config_file)
+ 
         msgs = config.get_unpacked_messages()
+       
         if server_mode :
             lstn = ServerListener(remote_ip, msgs, is_verbose, msg_freq, sleep_time)
         else :
@@ -104,5 +105,5 @@ def main(argv=None):
 
 if __name__ == "__main__":
     if DEBUG:
-        sys.argv.append("-h")
+        sys.argv.append("-v")
     sys.exit(main())

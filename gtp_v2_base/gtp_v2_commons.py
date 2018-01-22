@@ -182,27 +182,31 @@ ProtoIDType = {
     }
 
 class ProtocolID:
-    def __init__(self, proto_id, data = None):
-        self.__data = data
+    def __init__(self, proto_id, data = ''):
+        if data != '' :
+            self.__data = data.get_packed()
+        else:
+            self.__data = data
         if not ProtoIDType.has_key(proto_id):
             raise Exception("invalid Proto ID %s"%(proto_id))
-        self.__type = proto_id
+        self.__type = ProtoIDType[proto_id]
     
-    def get_lenght(self):
-        if self.__data == None:
-            return 0
-        return len(self.__data)
+    def get_length(self):
+        if type(self.__data) == str :
+            return len(self.__data)
+        return self.__data.get_length()
+        
     
     def set_data(self, data):
         self.__data = data
         
     def get_packed(self):
-        out = struct.pack(("!BB", self.__type, self.get_length()))
+        out = struct.pack("!HB", self.__type, self.get_length())
         out += self.__data
         return out
   
 class PAPData:
-    def __init__(self, peer_id = None, pwd = None):
+    def __init__(self, peer_id = '', pwd = ''):
         self.__pwd = pwd
         self.__pwd_len = len(pwd)
         self.__peer_id = peer_id
@@ -212,15 +216,18 @@ class PAPData:
         self.__len = 6 + self.__pwd_len + self.__peer_id_len
         
     def get_packed(self):
-        out = struct.pack("!BBHB", self.__code, self.__identifier, self.__len,
-                          self.__peer_id_len)
-        
+        out = struct.pack("!BB", self.__code, self.__identifier)   
+        out += struct.pack("!HB", self.__len, self.__peer_id_len)
+       
         if self.__peer_id :
             out += self.__peer_id
         out += struct.pack("!B", self.__pwd_len)
         if self.__pwd :
             out += self.__pwd
         return out
+    
+    def get_length(self):
+        return self.__len
 
 class DNSServer :
     def __init__(self, type, dns="0.0.0.0"):      
@@ -232,6 +239,9 @@ class DNSServer :
     def get_packed(self):
         return struct.pack("!BBL", self.__type, self.__len, self.__dns)
 
+    def get_length(self):
+        return self.__len 
+
             
 class IPCPData:
     def __init__(self, p_dns = '0.0.0.0', s_dns = '0.0.0.0'):
@@ -242,12 +252,13 @@ class IPCPData:
         self.__s_dns = DNSServer(131, s_dns)
         
     def get_packed(self):
-        out = struct.pack("!BBHB", self.__code, self.__identifier, self.__len)
+        out = struct.pack("!BBH", self.__code, self.__identifier, self.__len)
         out += self.__p_dns.get_packed()
         out += self.__s_dns.get_packed()
         return out
                       
-            
+    def get_length(self):
+        return self.__len        
             
             
         

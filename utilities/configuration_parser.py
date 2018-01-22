@@ -27,9 +27,10 @@ class parseConfigs(object):
         self.__configs = {'interface': None,
                    'base_message_list': [],
                    '3gpp_messages_list': [],
-                   'ies': []}
+                   'IES': []}
+        self.__parseConfigs()
         
-    def parseConfigs(self):
+    def __parseConfigs(self):
         confobj = ConfigObj(self.__cfg)
         
         if 'GENERIC' not in confobj.sections:
@@ -41,58 +42,56 @@ class parseConfigs(object):
         
         if 'base_message_list' not in confobj['GENERIC']:
             raise ConfigObjError('Value "GENERIC.base_message_list" is required')
-        self.__configs['base_message_list'] = confobj['GENERIC']['base_message_list'].strip(" ").split(',')
+        
+        self.__configs['base_message_list'] = confobj['GENERIC']['base_message_list']
         
         if '3gpp_messages_list' not in confobj['GENERIC']:
             raise ConfigObjError('Value "GENERIC.3gpp_messages_list" is required')
-        self.__configs['3gpp_messages_list'] = \
-            confobj['GENERIC']['3gpp_messages_list'].strip(" ").split(',')
+        self.__configs['3gpp_messages_list'] = confobj['GENERIC']['3gpp_messages_list']
         
         if self.__configs['base_message_list'] is None or \
             self.__configs['base_message_list'] == "" \
             or self.__configs['base_message_list'] == []:
             self.__configs['base_message_list'] = [1, 2]
-        
-        if not isinstance(self.__configs['base_message_list'], list):
-            self.__configs['base_message_list'] = [self.__configs['base_message_list']]
-            
-
-        self.__configs['3gpp_messages_list'] = \
-            confobj['GENERIC']['3gpp_messages_list'].strip(" ").split(',')            
-                  
-        if 'IES' not in confobj.sections:
-            raise ConfigObjError('Section IEs is required')
-        self.__msgs = self.__create_messages(confobj['IES'])
+                      
+        self.__msgs = self.__create_messages(confobj)
               
     
     def __format_base_messages(self):
         msgs = []
         for msg_type in self.__configs['base_message_list']:
-            if msg_type == 1 :
+            if int(msg_type) == 1 :
                 msgs.append(EchoRequest())
-            elif msg_type == 2 :
-                msgs.append(EchoResponse())
+            elif int(msg_type) == 2 :
+                msgs.append(EchoResponse(1))
             else: 
                 raise Exception("%s:%s - Invalid base msg type "
                                 "%d"%(self.__class__.__name__, 
                                       "__format_base_messages",
-                                      msg_type))
+                                      int(msg_type)))
         return msgs
     
     
     def __format_interface_msg(self, confobj):
         msgs = []
+        if confobj is None:
+            raise Exception("%s:%s - Configuration Object is None. "
+                            %(self.__class__.__name__, "__format_base_messages")) 
+        if 'IES' not in confobj.sections:
+            raise ConfigObjError('Section IES is required')
         for msg_type in self.__configs['3gpp_messages_list']:
-            if msg_type == 32 :
-                msgs.append(CreateSessionRequest(confobj['GENERIC']['source_ip'], 
-                    self.__configs['interface'], imsi = confobj['IEs']['imsi'], 
-                    mcc = confobj['IEs']['mcc'], mnc = confobj['IEs']['mnc'],
-                    lac = int(confobj['IEs']['lac']), rac = int(confobj['IEs']['rac']),
-                    apn = confobj['IEs']['apn'], p_dns = confobj['IEs']['primary_dns'],
-                    s_dns = confobj['IEs']['secondary_dns'], gsn = confobj['IEs']['gsn'],
-                    phone= confobj['IEs']['msisdn'], geo_type = int(confobj['IEs']['geo_type']),
-                    imei = confobj['IEs']['imei'], rat_type = confobj['IEs']['rat_type']))
-            elif msg_type == 3:
+            if int(msg_type) == 32 :
+               
+                msgs.append(CreateSessionRequest(source_ip = confobj['GENERIC']['source_ip'], 
+                    interface = int(self.__configs['interface']), imsi = confobj['IES']['imsi'], 
+                    mcc = confobj['IES']['mcc'], mnc = confobj['IES']['mnc'],
+                    lac = int(confobj['IES']['lac']), rac = int(confobj['IES']['rac']),
+                    apn = confobj['IES']['apn'], p_dns = confobj['IES']['primary_dns'],
+                    s_dns = confobj['IES']['secondary_dns'], gsn = confobj['IES']['gsn'],
+                    phone= confobj['IES']['msisdn'], geo_type = int(confobj['IES']['geo_type']),
+                    imei = confobj['IES']['imei'], rat_type = confobj['IES']['rat_type']))
+                
+            elif int(msg_type) == 33:
                 msgs.append(int(CreateSessionResponse(confobj['GENERIC']['teid']), 
                        int(confobj['GENERIC']['sqn']), confobj['GENERIC']['source_ip'], 
                        self.__configs['interface']))
