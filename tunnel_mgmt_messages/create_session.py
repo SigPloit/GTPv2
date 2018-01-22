@@ -25,9 +25,9 @@ class CreateSessionRequest(GTPV2MessageBase):
         GTPV2MessageBase.__init__(self, t = 0x01, msg_type = GTPmessageTypeDigit['create-session-request'])
         
         self.add_ie(Imsi(imsi))
-        #self.add_ie(RatType(rat_type))
+        self.add_ie(RatType(rat_type))
         self.add_ie(FTeid(source_ip, interface))
-        #self.add_ie(AccessPointName(apn))
+        self.add_ie(AccessPointName(apn))
         #self.add_ie(BearerContextCreateSessionRequest(ip = source_ip, 
         #                                              interface = interface))
         #self.add_ie(UserLocationInformation())

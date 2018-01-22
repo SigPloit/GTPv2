@@ -191,7 +191,7 @@ class RatType(InformationElementBase):
     # 0 reserved    
     # 7-255 spare    
     def __init__(self, rat_type = 'E-UTRAN'):
-        InformationElementBase.__init__(self, 151)
+        InformationElementBase.__init__(self, 82)
         self._len = 1 # 2 bytes
         if not gtp_v2_commons.RATTypeDigit.has_key(rat_type) :
             raise Exception("invalid rat type: %d"%(rat_type))
@@ -202,7 +202,7 @@ class RatType(InformationElementBase):
     
 class AccessPointName(InformationElementBase):
     def __init__(self, apn = "ggsn3.tilab.it") :
-        InformationElementBase.__init__(self, 131)      
+        InformationElementBase.__init__(self, 71)      
         self._len= len(apn)# 2 bytes
         self.__val = apn
         
@@ -213,7 +213,7 @@ class MEIdentity(InformationElementBase) :
     def __init__(self, imei = "3518280450609004") :
         if len(imei) != 16 :
             raise Exception("invalid imei length %d"%len(imei)) 
-        InformationElementBase.__init__(self, 154)           
+        InformationElementBase.__init__(self, 75)           
         self._len = 8    #2 bytes
         self.__val = imei # 8 bytes
             
