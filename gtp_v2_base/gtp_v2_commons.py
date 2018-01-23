@@ -117,6 +117,7 @@ class MobileNetworkIdentifier:
         hex_val += self.__mcc[2]
         hex_val += self.__mnc[1]
         hex_val += self.__mnc[0]
+        print "MobileNetworkIdentifier %s"%(hex_val)
         return bytearray.fromhex(hex_val)  
 
 

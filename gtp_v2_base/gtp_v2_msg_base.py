@@ -100,7 +100,8 @@ class GTPV2MessageBase(object):
         if (self.__t_flag == 0x00) :
             self.__hdr_len = 8
         else:
-            self.__teid = 0x00000000
+            #self.__teid = random.getrandbits(32)
+            self.__teid = 0x00
             self.__hdr_len = 12            
         self.__packed_ie_len = 0
         self.__msg_type = int(msg_type)
@@ -116,6 +117,7 @@ class GTPV2MessageBase(object):
         for ie in self.__ie_array:
             self.__packed_ie += ie.get_packed_ie()
         self.__packed_ie_len = len(self.__packed_ie)
+        print "__get_packed_ies %d"%self.__packed_ie_len
 
     def add_ie(self, ie):
         if ie:

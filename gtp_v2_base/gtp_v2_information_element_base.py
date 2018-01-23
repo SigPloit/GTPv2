@@ -73,33 +73,38 @@ class UserLocationInformation(InformationElementBase) :
     def __init__(self, mcc = "222", mnc = "01", lac = 0x00, sac = 0x00, 
                  tac = 0x00, rac = 0x00, cgi = 0x00, ecgi = 0x00):
         InformationElementBase.__init__(self, 86)
-        self._len = 0
+        self._len = 1
+        
         mni = gtp_v2_commons.MobileNetworkIdentifier(mcc, mnc)
+       
         self.__lai = self.__sai = self.__tai = self.__rai = self.__cgi = \
         self.__ecgi = None
         self.__flags = 0x00
         if lac :
-            self.__lai = gtp_v2_commons.AI(mni, lac)
+            self.__lai = gtp_v2_commons.AI(mni = mni, val = lac)
             self._len += 5
             self.__flags = (self.__flags | (1 << 5))
             if sac :
-                self.__sai = gtp_v2_commons.LocationInformation(self.__lai, sac)
+                self.__sai = gtp_v2_commons.LocationInformation(lai = self.__lai, 
+                                                                others = sac)
                 self._len += 7
                 self.__flags = (self.__flags | (1 << 1))
             if rac :
-                self.__rai = gtp_v2_commons.LocationInformation(self.__lai, rac)
+                self.__rai = gtp_v2_commons.LocationInformation(lai = self.__lai, 
+                                                                others = rac)
                 self._len += 7
                 self.__flags = (self.__flags | (1 << 2))
             if cgi :
-                self.__cgi = gtp_v2_commons.LocationInformation(self.__lai, cgi)
+                self.__cgi = gtp_v2_commons.LocationInformation(lai = self.__lai, 
+                                                                others = cgi)
                 self._len += 7
                 self.__flags = (self.__flags | 1)                
         if tac :
-            self.__tai = gtp_v2_commons.AI(tac)    
+            self.__tai = gtp_v2_commons.AI(mni = mni, val = tac)    
             self._len += 5
             self.__flags = (self.__flags | (1 << 3))
         if ecgi:
-            self.__ecgi = gtp_v2_commons.ECGI(mni, ecgi)
+            self.__ecgi = gtp_v2_commons.ECGI(mni = mni, ecgi = ecgi)
             self._len += 7
             self.__flags = (self.__flags | (1 << 4))
     
@@ -115,6 +120,9 @@ class UserLocationInformation(InformationElementBase) :
             out += self.__tai.get_packed_val()
         if self.__ecgi :
             out += self.__ecgi.get_packed_val()
+        if self.__lai :
+            out += self.__lai.get_packed_val()            
+        print "UserLocationInformation %d"%self._len
         return out  
       
 class Imsi (InformationElementBase):    
@@ -145,10 +153,34 @@ class Imsi (InformationElementBase):
     
 class Msisdn(InformationElementBase):
     def __init__(self, msisdn="393356534399"):
-        InformationElementBase.__init__(self, 134)
+        InformationElementBase.__init__(self, 76)
         self.__val = str(msisdn)
         self._len = 6
+    
+    def _get_val(self):
+        length = len(self.__val)
+        to_append = ''
+        if length % 2 != 0 :
+            length = length - 1
+            to_append = 'f' + self.__val[length]
+        hex_val = ''
+        i = 0
+        while i < (length - 1) :
+            c1 = self.__val[i]
+            c2 = self.__val[i+1]
+            hex_val += c2
+            hex_val +=c1
+            i += 2
+        hex_val += to_append
+        return bytearray.fromhex(hex_val)
 
+
+
+class eMLLPPPriority(InformationElementBase):
+    def __init__(self, priority):
+        InformationElementBase.__init__(self, 134)
+        self.__val = str(priority)
+        self._len = 6
         
     def _get_val(self):
         length = len(self.__val)
@@ -172,7 +204,7 @@ class ApnRestriction(InformationElementBase):
     def __init__(self, val = 0):
         if val < 0 or val > 5 :
             raise Exception("invalid apn restriction value %d"%(val))
-        InformationElementBase.__init__(self, 149)
+        InformationElementBase.__init__(self, 127)
         self._len = 1    # 2 bytes
         self.__val = val # 1 byte
     
@@ -397,7 +429,7 @@ class ProtocolConfigurationOptions(InformationElementBase):
        
         self.__proto.append(gtp_v2_commons.ProtocolID(proto_id = 'IPNAS'))
        
-        self._len = 0
+        self._len = 1
         for i in self.__proto :
 
             self._len += i.get_length() + 3
