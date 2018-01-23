@@ -117,7 +117,7 @@ class GTPV2MessageBase(object):
         for ie in self.__ie_array:
             self.__packed_ie += ie.get_packed_ie()
         self.__packed_ie_len = len(self.__packed_ie)
-        print "__get_packed_ies %d"%self.__packed_ie_len
+   
 
     def add_ie(self, ie):
         if ie:

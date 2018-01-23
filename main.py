@@ -26,11 +26,6 @@ from utilities.gtpv2_sender_listener import SenderListener
 __all__ = []
 __version__ = 0.1
 
-
-DEBUG = 1
-TESTRUN = 0
-PROFILE = 0
-
 GTP_PORT = 2123
 DEFAULT_MSG_FREQ = 20
 DEFAULT_SLEEPTIME = 1
@@ -55,16 +50,12 @@ def main(argv=None):
         parser.add_option("-v", "--verbose", dest="verbose", action="count", help="set verbosity level [default: %default]")
         parser.add_option("-s", "--server_mode", dest="server_mode", action="store_true", help="the software will act as server [default: %default]")
         parser.add_option("-c", "--config", dest="config_file", help="the configuration file")
-        parser.add_option("-m", "--msg-freq", dest="msg_freq", type=int, help="determine the frequency of the messages. Set the sleep time between each message [default: %default]")
-        parser.add_option("-d", "--delay", dest="delay", type=int, help="set the sleep time before start sending messages, it is the negotiation time [default: %default]")
-        parser.add_option("-f", "--fuzzy", dest="is_fuzzy", action="store_false", help="set if is fuzzy [default: %default]")
-        #parser.add_option("-i", "--local_ip", dest="local_ip", help="local ip address")
+        parser.add_option("-l", "--local_ip", dest="local_ip", help="local ip address")
         parser.add_option("-r", "--remote_ip", dest="remote_ip", help="remote ip address")        
         
         # set defaults
         parser.set_defaults(server_mode=False, config_file="", 
-                            msg_freq=DEFAULT_SLEEPTIME, is_fuzzy=False,
-                            delay=DEFAULT_SLEEPTIME,
+                            local_ip = '127.0.0.1'
                             verbose = False)
 
         # process options
@@ -74,11 +65,11 @@ def main(argv=None):
             #print("verbosity level = %d" % opts.verbose)
             is_verbose = True
         server_mode = opts.server_mode
-        #is_fuzzy = opts.is_fuzzy
-        msg_freq = opts.msg_freq
-        #local_ip = opts.local_ip
+
+        msg_freq = DEFAULT_SLEEPTIME
+        siurc = opts.local_ip
         remote_ip = opts.remote_ip
-        sleep_time = opts.delay
+        sleep_time = DEFAULT_SLEEPTIME
        
         # MAIN BODY #
         if opts.config_file == "" :

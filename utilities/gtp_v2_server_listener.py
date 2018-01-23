@@ -4,7 +4,8 @@ Created on 12 Dec 2017
 @author: lia
 '''
 import threading, time, signal
-from socket import socket
+from socket import *
+
 
 from gtpv2_sender_listener import SenderListener
 
@@ -19,10 +20,10 @@ class ServerListener(threading.Thread):
         
         self.TAG_NAME = 'GTPV2 SERVER_LISTENER'
         
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock = socket(AF_INET, SOCK_DGRAM)
+        self.sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         
-        self.sock.bind('0.0.0.0', GTP_C_PORT)
+        self.sock.bind(('0.0.0.0', GTP_C_PORT))
        
         
         self.peer = peer
@@ -36,9 +37,9 @@ class ServerListener(threading.Thread):
         self.lsntPathMgmt= None
         self.lsntSender = None
         
-        signal.signal(signal.SIGQUIT, self.stop())
-        signal.signal(signal.SIGINT, self.stop())
-        signal.signal(signal.SIGTERM, self.stop())
+        signal.signal(signal.SIGQUIT, self.stop)
+        signal.signal(signal.SIGINT, self.stop)
+        signal.signal(signal.SIGTERM, self.stop)
         
     ##
     ## @brief      Determines if the thread is running
@@ -60,8 +61,8 @@ class ServerListener(threading.Thread):
         self.is_running = True
         
         if self.is_verbose: 
-            print "%s: Listening for a connection on %s:%s" %(self.server_address,
-                                                              self.TAG_NAME)            
+            print "Working in server mode"
+           
         ''' START PATH MGMT  LISTENER '''
         self.lsntPathMgmt = PathMgmtListener(self.sock, self.is_verbose)
         self.lsntPathMgmt_daemon = True

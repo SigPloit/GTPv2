@@ -8,7 +8,6 @@ import errno
 from socket import *
 import time
 
-import errno
 
 GTP_C_PORT = 2123
 class SenderListener(threading.Thread):
@@ -88,7 +87,7 @@ class SenderListener(threading.Thread):
                     if self.is_verbose:
                         print ("%s: Sending message (#%d of %d)..."
                                %(self.TAG_NAME,curr_count, tot_count))
-                    print self.peer
+                   
                     sent_bytes = self.sock.sendto(data, (self.peer, GTP_C_PORT))
                     if sent_bytes is not None and sent_bytes > 0:
                         if self.is_verbose: 

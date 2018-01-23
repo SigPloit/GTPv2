@@ -122,7 +122,6 @@ class UserLocationInformation(InformationElementBase) :
             out += self.__ecgi.get_packed_val()
         if self.__lai :
             out += self.__lai.get_packed_val()            
-        print "UserLocationInformation %d"%self._len
         return out  
       
 class Imsi (InformationElementBase):    
@@ -276,7 +275,7 @@ class FTeid(InformationElementBase):
     def __init__(self, sender_ip, interface):
         if interface > 37 :
             raise Exception('Invalid 3gpp interface %d'%(interface))
-        print interface
+      
         InformationElementBase.__init__(self, 87)
         self._len = 9
         self.__ip = int(IP(sender_ip).strHex(), 16) #4 bytes

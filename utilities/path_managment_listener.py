@@ -6,7 +6,7 @@ Created on 12 Dec 2017
 import threading
 import errno
 import struct
-from socket import socket, timeout
+from socket import socket, timeout, error
 from path_mgmt_messages.echo import EchoResponse
 from gtp_v2_base.gtp_v2_commons import GTPmessageTypeDigit
 class PathMgmtListener(threading.Thread):
@@ -45,10 +45,11 @@ class PathMgmtListener(threading.Thread):
             print "Keep working on the opened connection"
             
         self.is_running = True
-        while self.connection is not None and self.is_running:
+        while self.sock is not None and self.is_running:
             try:
-                data = self.connection.recvfrom(1024)            
-                if data or data != "":                      
+                data = self.sock.recvfrom(1024)            
+                if len(data) > 8 : 
+                    print len(data)                     
                     (flags, msg_type, length, sequence) = struct.unpack("!BBHL", 
                                                                         data[:8])
                     version = flags & 0x40 
@@ -81,18 +82,21 @@ class PathMgmtListener(threading.Thread):
             except timeout, e:
                 print "%s: TIMEOUT_ERROR: %s" % (self.TAG_NAME, e)
                 pass
-            except Exception, e:
+            except error, e:
                 if e.errno == errno.ECONNREFUSED:
-                    print "%s: CONNECTION_REFUSED: %s" % (self.TAG_NAME, e)
+                    print "%s: CONNECTION_REFUSED: %s"%(self.TAG_NAME, e)
                 if e.errno == errno.EBADFD:
-                    print "%s: BAD_FILE_DESCRIPTOR_ERROR: %s" % (self.TAG_NAME, e)
+                    print "%s: BAD_FILE_DESCRIPTOR_ERROR: %s"%(self.TAG_NAME, e)
                 elif e.errno == errno.EPIPE:
-                    print "%s: BROKEN_PIPE_ERROR: %s" % (self.TAG_NAME, e)
+                    print "%s: BROKEN_PIPE_ERROR: %s"%(self.TAG_NAME, e)
                 elif e.errno == errno.ECONNRESET:
-                    print "%s: CONNECTION_RESET_ERROR: %s" % (self.TAG_NAME, e)
+                    print "%s: CONNECTION_RESET_ERROR: %s"%(self.TAG_NAME, e)
                 else:
-                    print "%s: UNKNOWN_ERROR: %s" % (self.TAG_NAME, e)
+                    print "%s: UNKNOWN_ERROR: %s"%(self.TAG_NAME, e)
                     pass
+            except Exception, e:
+                print "%s:GENERIC ERROR : %s"%(self.TAG_NAME, e)
+                pass       
                 
                 break
     
