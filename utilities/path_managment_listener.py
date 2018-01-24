@@ -8,7 +8,7 @@ import errno
 import struct
 from socket import socket, timeout, error
 from path_mgmt_messages.echo import EchoResponse
-from gtp_v2_base.gtp_v2_commons import GTPmessageTypeDigit
+from commons.gtp_v2_commons import GTPmessageTypeDigit
 class PathMgmtListener(threading.Thread):
     '''
     classdocs

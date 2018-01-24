@@ -3,9 +3,9 @@ Created on 12 Sep 2017
 
 @author: lia
 '''
-from gtp_v2_base.gtp_v2_msg_base import GTPV2MessageBase
-from gtp_v2_base.gtp_v2_commons import *
-from gtp_v2_base.gtp_v2_information_element_base import *
+from commons.gtp_v2_msg_base import GTPV2MessageBase
+from commons.gtp_v2_commons import *
+from commons.gtp_v2_information_element_base import *
 
 class CreateSessionRequest(GTPV2MessageBase):
     '''

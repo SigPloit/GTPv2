@@ -33,9 +33,9 @@
 # -*- coding: utf-8 -*-
 import random
 import struct
-from gtp_v2_base.gtp_v2_information_element_base import *
-from gtp_v2_base.gtp_v2_commons import *
-from mysql.connector.utils import print_buffer
+from gtp_v2_information_element_base import *
+from gtp_v2_commons import *
+
 '''
 TEID NOT PRESENT
 

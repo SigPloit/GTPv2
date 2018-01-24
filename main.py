@@ -29,6 +29,7 @@ __version__ = 0.1
 GTP_PORT = 2123
 DEFAULT_MSG_FREQ = 20
 DEFAULT_SLEEPTIME = 1
+DEBUG = 0
 
 def main(argv=None):
     '''Command line options.'''
@@ -55,7 +56,7 @@ def main(argv=None):
         
         # set defaults
         parser.set_defaults(server_mode=False, config_file="", 
-                            local_ip = '127.0.0.1'
+                            local_ip = '127.0.0.1',
                             verbose = False)
 
         # process options
