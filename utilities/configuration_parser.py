@@ -3,13 +3,14 @@ Created on 12 Dec 2017
 
 @author: lia
 '''
-#import mobility_mgmt_messages
-#import other_no_3gpp_accesss_messages
-
-from path_mgmt_messages.echo import EchoRequest, EchoResponse
-from tunnel_mgmt_messages.create_session import CreateSessionRequest, CreateSessionResponse
+import sys
+sys.path.append('..')
+from gtp_v2_core.path_mgmt_messages.echo import EchoRequest, EchoResponse
+from gtp_v2_core.tunnel_mgmt_messages.create_session import CreateSessionRequest,\
+ CreateSessionResponse
 
 from configobj import ConfigObj, ConfigObjError
+
 class parseConfigs(object):
     '''
     classdocs

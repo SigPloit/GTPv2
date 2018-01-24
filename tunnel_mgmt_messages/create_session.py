@@ -3,9 +3,11 @@ Created on 12 Sep 2017
 
 @author: lia
 '''
-from commons.gtp_v2_msg_base import GTPV2MessageBase
-from commons.gtp_v2_commons import *
-from commons.gtp_v2_information_element_base import *
+import sys
+sys.path.append('..')
+from gtp_v2_core.commons.gtp_v2_msg_base import GTPV2MessageBase
+from gtp_v2_core.commons.gtp_v2_commons import GTPmessageTypeDigit
+from gtp_v2_core.commons.gtp_v2_information_element_base import *
 
 class CreateSessionRequest(GTPV2MessageBase):
     '''
@@ -18,7 +20,7 @@ class CreateSessionRequest(GTPV2MessageBase):
                  apn="wap.tim.it", p_dns ='127.0.0.1', s_dns ="127.0.0.2", 
                  gsn="127.0.0.1", phone="393282270202", geo_type = 0, 
                  imei='3518280450609004', rat_type = 'E-UTRAN', tac = 0, 
-                 ecgi = 0, sac = 0, cgi = 0, sm = 0):
+                 ecgi = 0, sac = 0, cgi = 0, sm = 0, recovery = True):
         '''
         Constructor
         '''
@@ -44,7 +46,8 @@ class CreateSessionRequest(GTPV2MessageBase):
         self.add_ie(MEIdentity(imei))
         self.add_ie(ChargingCharacteristic())   
         self.add_ie(ProtocolConfigurationOptions(p_dns=p_dns, s_dns=s_dns))
-        self.add_ie(Recovery())
+        if recovery :
+            self.add_ie(Recovery())
         
 
      

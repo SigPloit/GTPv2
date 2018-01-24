@@ -81,24 +81,20 @@ class PathMgmtListener(threading.Thread):
                         print "%s: GTP ECHO RESPONSE message not sent"%(self.TAG_NAME)            
             except timeout, e:
                 print "%s: TIMEOUT_ERROR: %s" % (self.TAG_NAME, e)
-                pass
+                break
             except error, e:
-                if e.errno == errno.ECONNREFUSED:
-                    print "%s: CONNECTION_REFUSED: %s"%(self.TAG_NAME, e)
                 if e.errno == errno.EBADFD:
                     print "%s: BAD_FILE_DESCRIPTOR_ERROR: %s"%(self.TAG_NAME, e)
+                    break
                 elif e.errno == errno.EPIPE:
                     print "%s: BROKEN_PIPE_ERROR: %s"%(self.TAG_NAME, e)
-                elif e.errno == errno.ECONNRESET:
-                    print "%s: CONNECTION_RESET_ERROR: %s"%(self.TAG_NAME, e)
+                    break
                 else:
                     print "%s: UNKNOWN_ERROR: %s"%(self.TAG_NAME, e)
-                    pass
+                    break
             except Exception, e:
                 print "%s:GENERIC ERROR : %s"%(self.TAG_NAME, e)
-                pass       
-                
-                break
+                break       
     
     ##
     ## @brief      Stops the execution of the thread

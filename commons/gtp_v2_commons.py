@@ -102,7 +102,6 @@ GTPmessageTypeDigit = {
 }
 
 
-
 class MobileNetworkIdentifier:
     def __init__(self, mcc = '222', mnc = '01'):
         self.__mcc = mcc
