@@ -42,7 +42,7 @@ class parseConfigs(object):
         self.__configs['interface'] = confobj['GENERIC']['interface']
         
         if 'base_message_list' not in confobj['GENERIC']:
-            raise ConfigObjError('Value "GENERIC.base_message_list" is required')
+            self.__configs['base_message_list'] = [1]
         
         self.__configs['base_message_list'] = confobj['GENERIC']['base_message_list']
         
@@ -53,7 +53,7 @@ class parseConfigs(object):
         if self.__configs['base_message_list'] is None or \
             self.__configs['base_message_list'] == "" \
             or self.__configs['base_message_list'] == []:
-            self.__configs['base_message_list'] = [1, 2]
+            self.__configs['base_message_list'] = [1]
                       
         self.__msgs = self.__create_messages(confobj)
               

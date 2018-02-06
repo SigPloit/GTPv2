@@ -57,7 +57,6 @@ class ServerListener(threading.Thread):
     ## @param      self  refers to the class itself
     ##
     def run(self):
-        self.cer_cea_complete = False
         self.is_running = True
         
         if self.is_verbose: 
