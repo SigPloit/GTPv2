@@ -173,8 +173,6 @@ class Msisdn(InformationElementBase):
         hex_val += to_append
         return bytearray.fromhex(hex_val)
 
-
-
 class eMLLPPPriority(InformationElementBase):
     def __init__(self, priority):
         InformationElementBase.__init__(self, 134)
@@ -289,6 +287,8 @@ class FTeid(InformationElementBase):
         
         return struct.pack("!BLL", (self.__ip_ver_flag | self.__3gpp_interface),
                            self.__teid, self.__ip) 
+    def get_teid(self):
+        return self.__teid
 
 class SelectionMode(InformationElementBase):
     def __init__(self, selection_mode = 0):

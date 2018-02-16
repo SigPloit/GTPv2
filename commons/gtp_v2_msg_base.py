@@ -157,6 +157,8 @@ class GTPV2MessageBase(object):
         hdr = self.get_packed_header()
         return (hdr + payload)
     
+    def get_teid(self):
+        return self.__teid
     
     def set_packed_ie(self, packed_ie):
         self.__packed_ie = packed_ie

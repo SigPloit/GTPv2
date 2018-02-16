@@ -3,8 +3,8 @@ Created on 12 Sep 2017
 
 @author: lia
 '''
-import sys
-sys.path.append('..')
+#import sys
+#sys.path.append('..')
 from gtp_v2_core.commons.gtp_v2_msg_base import GTPV2MessageBase
 from gtp_v2_core.commons.gtp_v2_commons import GTPmessageTypeDigit
 from gtp_v2_core.commons.gtp_v2_information_element_base import *
@@ -28,9 +28,13 @@ class CreateSessionRequest(GTPV2MessageBase):
         GTPV2MessageBase.__init__(self, t = 0x01,
                                   msg_type = GTPmessageTypeDigit['create-session-request'])
         
+     
+ 
         self.add_ie(Imsi(imsi))
         self.add_ie(RatType(rat_type))
-        self.add_ie(FTeid(source_ip, interface))
+        fteid = FTeid(source_ip, interface)
+        self.__fteid = fteid.get_teid()
+        self.add_ie(fteid)
         self.add_ie(AccessPointName(apn))
         self.add_ie(BearerContextCreateSessionRequest(ip = source_ip, 
                                                       interface = interface))
@@ -49,8 +53,9 @@ class CreateSessionRequest(GTPV2MessageBase):
         if recovery :
             self.add_ie(Recovery())
         
-
-     
+    
+    def get_fteid(self):
+        return self.__fteid
      
 class CreateSessionResponse(GTPV2MessageBase):
     '''

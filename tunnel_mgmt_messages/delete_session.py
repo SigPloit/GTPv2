@@ -3,11 +3,10 @@ Created on 29 Jan 2018
 
 @author: loay
 '''
+from gtp_v2_core.commons.gtp_v2_msg_base import GTPV2MessageBase
 
-from gtp_v2_base.gtp_v2_msg_base import GTPV2MessageBase
-from gtp_v2_base.gtp_v2_commons import *
-from gtp_v2_base.gtp_v2_information_element_base import *
-
+from gtp_v2_core.commons.gtp_v2_commons import GTPmessageTypeDigit
+from gtp_v2_core.commons.gtp_v2_information_element_base import *
 
 class DeleteSessionRequest(GTPV2MessageBase):
     '''
