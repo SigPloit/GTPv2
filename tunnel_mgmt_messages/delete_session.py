@@ -34,7 +34,7 @@ class DeleteSessionResponse(GTPV2MessageBase):
     classdocs
     '''
 
-    def __init__(self, teid, sqn, source_ip, interface):
+    def __init__(self, teid, sqn):
         '''
         Constructor
         '''

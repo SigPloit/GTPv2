@@ -8,6 +8,8 @@ sys.path.append('..')
 from gtp_v2_core.path_mgmt_messages.echo import EchoRequest, EchoResponse
 from gtp_v2_core.tunnel_mgmt_messages.create_session import CreateSessionRequest,\
  CreateSessionResponse
+from gtp_v2_core.tunnel_mgmt_messages.delete_session import DeleteSessionRequest,\
+ DeleteSessionResponse
 
 from configobj import ConfigObj, ConfigObjError
 
@@ -57,9 +59,9 @@ class parseConfigs(object):
     def __format_base_messages(self):
         msgs = []
         for msg_type in self.__configs['base_message_list']:
-            if int(msg_type) == 1 :
+            if int(msg_type) == GTPmessageTypeDigit["echo-request"] :
                 msgs.append(EchoRequest())
-            elif int(msg_type) == 2 :
+            elif int(msg_type) == GTPmessageTypeDigit["echo-response"]  :
                 msgs.append(EchoResponse(1))
             else: 
                 raise Exception("%s:%s - Invalid base msg type "
@@ -77,21 +79,41 @@ class parseConfigs(object):
         if 'IES' not in confobj.sections:
             raise ConfigObjError('Section IES is required')
         for msg_type in self.__configs['3gpp_messages_list']:
-            if int(msg_type) == 32 :
-               
-                msgs.append(CreateSessionRequest(source_ip = confobj['GENERIC']['source_ip'], 
-                    interface = int(self.__configs['interface']), imsi = confobj['IES']['imsi'], 
-                    mcc = confobj['IES']['mcc'], mnc = confobj['IES']['mnc'],
-                    lac = int(confobj['IES']['lac']), rac = int(confobj['IES']['rac']),
-                    apn = confobj['IES']['apn'], p_dns = confobj['IES']['primary_dns'],
-                    s_dns = confobj['IES']['secondary_dns'], gsn = confobj['IES']['gsn'],
-                    phone= confobj['IES']['msisdn'], geo_type = int(confobj['IES']['geo_type']),
-                    imei = confobj['IES']['imei'], rat_type = confobj['IES']['rat_type']))
+            if int(msg_type) == GTPmessageTypeDigit["create-session-request"] :
+                msgs.append(CreateSessionRequest(
+                    source_ip = confobj['GENERIC']['source_ip'], 
+                    interface = int(self.__configs['interface']), 
+                    imsi = confobj['IES']['imsi'], 
+                    mcc = confobj['IES']['mcc'], 
+                    mnc = confobj['IES']['mnc'],
+                    lac = int(confobj['IES']['lac']), 
+                    rac = int(confobj['IES']['rac']),
+                    apn = confobj['IES']['apn'], 
+                    p_dns = confobj['IES']['primary_dns'],
+                    s_dns = confobj['IES']['secondary_dns'], 
+                    gsn = confobj['IES']['gsn'],
+                    phone= confobj['IES']['msisdn'], 
+                    geo_type = int(confobj['IES']['geo_type']),
+                    imei = confobj['IES']['imei'], 
+                    rat_type = confobj['IES']['rat_type']))
                 
-            elif int(msg_type) == 33:
+            elif int(msg_type)  == GTPmessageTypeDigit["create-session-response"] :
                 msgs.append(int(CreateSessionResponse(confobj['GENERIC']['teid']), 
-                       int(confobj['GENERIC']['sqn']), confobj['GENERIC']['source_ip'], 
-                       self.__configs['interface']))
+                    int(confobj['GENERIC']['sqn']), confobj['GENERIC']['source_ip'], 
+                    self.__configs['interface']))
+                
+            elif int(msg_type)  == GTPmessageTypeDigit["delete-session-request"] :
+                for t in confobj['GENERIC']['teid']:
+                    msgs.append(DeleteSessionRequest(teid = int(t),
+                        mcc = confobj['IES']['mcc'], 
+                        mnc = confobj['IES']['mnc'],
+                        lac = int(confobj['IES']['lac']),
+                        rac = int(confobj['IES']['rac'])))
+                                      
+            elif int(msg_type)  == GTPmessageTypeDigit["delete-session-response"] :
+                for t in confobj['GENERIC']['teid']:
+                    msgs.append(DeleteSessionResponse(teid = int(t), 
+                       int(confobj['GENERIC']['sqn']))                
         return msgs
     
     def __create_messages(self, confobj):

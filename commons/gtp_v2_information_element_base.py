@@ -394,8 +394,8 @@ class BearerQoS(InformationElementBase):
         val += bytearray.fromhex(self.__gbr_down)
         return val
         
-class BearerContextCreateSessionRequest(InformationElementBase):
-    def __init__(self, ip, ebi = 6, pci = 0x01, pl = 0x02, pvi = 0x00, qci = 0x07, 
+class BearerContext(InformationElementBase):
+    def __init__(self, ip, ebi = 5, pci = 0x01, pl = 0x02, pvi = 0x00, qci = 0x07, 
                  mbr_up = "0000000000", mbr_down = "0000000000", 
                  gbr_up = "0000000000", gbr_down = "0000000000",
                  interface = 10):

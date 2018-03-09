@@ -15,7 +15,7 @@ class CreateSessionRequest(GTPV2MessageBase):
     '''
 
 
-    def __init__(self, source_ip, interface, imsi = "222885500003199", 
+    def __init__(self, source_ip, interface = 7, imsi = "222885500003199", 
                  mcc = "222", mnc="88", lac = 2788, rac = 1, 
                  apn="wap.tim.it", p_dns ='127.0.0.1', s_dns ="127.0.0.2", 
                  gsn="127.0.0.1", phone="393282270202", geo_type = 0, 
@@ -36,8 +36,7 @@ class CreateSessionRequest(GTPV2MessageBase):
         self.__fteid = fteid.get_teid()
         self.add_ie(fteid)
         self.add_ie(AccessPointName(apn))
-        self.add_ie(BearerContextCreateSessionRequest(ip = source_ip, 
-                                                      interface = interface))
+        self.add_ie(BearerContext(ip = source_ip, interface = interface))
         self.add_ie(UserLocationInformation(mcc = mcc, mnc = mnc, lac = lac, 
                                             rac = rac, tac = tac, ecgi = ecgi, 
                                             sac = sac, cgi = cgi))
