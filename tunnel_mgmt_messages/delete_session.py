@@ -20,7 +20,7 @@ class DeleteSessionRequest(GTPV2MessageBase):
         '''
 
         GTPV2MessageBase.__init__(self, t=0x01,
-                                  msg_type=GTPmessageTypeDigit['delete-session-request'])
+            msg_type=GTPmessageTypeDigit['delete-session-request'])
 
         self.add_ie(EPSBearerID(ebi))
         self.add_ie(UserLocationInformation(mcc=mcc, mnc=mnc, lac=lac,
@@ -34,12 +34,11 @@ class DeleteSessionResponse(GTPV2MessageBase):
     classdocs
     '''
 
-    def __init__(self, teid, sqn):
+    def __init__(self, teid, sqn = 0x00):
         '''
         Constructor
         '''
-        GTPV2MessageBase.__init__(
-            self, GTPmessageTypeDigit['delete-session-response'])
+        GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn,
+            msg_type = GTPmessageTypeDigit['delete-session-response'])
         self.set_teid(teid)
-        self.set_sequence_number(sqn)
         self.add_ie(SuccessCause())

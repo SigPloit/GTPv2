@@ -20,13 +20,13 @@ class CreateSessionRequest(GTPV2MessageBase):
                  apn="wap.tim.it", p_dns ='127.0.0.1', s_dns ="127.0.0.2", 
                  gsn="127.0.0.1", phone="393282270202", geo_type = 0, 
                  imei='3518280450609004', rat_type = 'E-UTRAN', tac = 0, 
-                 ecgi = 0, sac = 0, cgi = 0, sm = 0, recovery = True):
+                 ecgi = 0, sac = 0, cgi = 0, sm = 0, recovery = True, ebi = 5):
         '''
         Constructor
         '''
         
         GTPV2MessageBase.__init__(self, t = 0x01,
-                                  msg_type = GTPmessageTypeDigit['create-session-request'])
+            msg_type = GTPmessageTypeDigit['create-session-request'])
         
      
  
@@ -36,10 +36,11 @@ class CreateSessionRequest(GTPV2MessageBase):
         self.__fteid = fteid.get_teid()
         self.add_ie(fteid)
         self.add_ie(AccessPointName(apn))
-        self.add_ie(BearerContext(ip = source_ip, interface = interface))
+        self.add_ie(BearerContext(ebi = ebi, ip = source_ip, 
+                interface = interface))
         self.add_ie(UserLocationInformation(mcc = mcc, mnc = mnc, lac = lac, 
-                                            rac = rac, tac = tac, ecgi = ecgi, 
-                                            sac = sac, cgi = cgi))
+                rac = rac, tac = tac, ecgi = ecgi, 
+                sac = sac, cgi = cgi))
         self.add_ie(ServingNetwork(mcc = mcc, mnc = mnc))           
         self.add_ie(SelectionMode(selection_mode = sm))          
         self.add_ie(PDNAddressAllocation())
@@ -60,13 +61,17 @@ class CreateSessionResponse(GTPV2MessageBase):
     '''
     classdocs
     '''
-    def __init__(self, teid, sqn, source_ip, interface):
+    def __init__(self, teid, sqn = 0x00, source_ip, interface, 
+            p_dns ='127.0.0.1', s_dns ="127.0.0.2"):
         '''
         Constructor
         '''
-        GTPV2MessageBase.__init__(self, GTPmessageTypeDigit['create-session-response'])
+        GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn, 
+            msg_type = GTPmessageTypeDigit['create-session-response'])
         self.set_teid(teid)
-        self.set_sequence_number(sqn)
         self.add_ie(FTeid(source_ip, interface))
         self.add_ie(SuccessCause())
-         
+        self.add_ie(BearerContext(ip = source_ip, interface = interface))        
+        self.add_ie(ProtocolConfigurationOptions(p_dns=p_dns, s_dns=s_dns))   
+        self.add_ie(PDNAddressAllocation())
+        self.add_ie(ApnRestriction())              

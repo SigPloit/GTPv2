@@ -13,25 +13,29 @@ class CreateBearerRequest(GTPV2MessageBase):
     '''
 
 
-    def __init__(self, teid, ebi = 5, source_ip, interface = 7):
+    def __init__(self, teid, sqn = 0x00, ebi = 5, source_ip, interface = 7):
         '''
         Constructor
         '''
-        GTPV2MessageBase.__init__(self, t = 0x01,
+        GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn,
             msg_type = GTPmessageTypeDigit['create-bearer-request'])
         self.set_teid(teid)
         self.add_ie(BearerContext(ip = source_ip, interface = interface))
         self.add_ie(EPSBearerID(ebi = ebi))
 
+
 class CreateBearerResponse(GTPV2MessageBase):
     '''
     classdocs
     '''
-    def __init__(self, teid, sqn, source_ip, interface = 7):
+    def __init__(self, teid, sqn = 0x00, ebi = 5, source_ip, interface = 7):
         '''
         Constructor
         '''
-        GTPV2MessageBase.__init__(self, GTPmessageTypeDigit['create-bearer-response'])
+        GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn,
+            msg_type = GTPmessageTypeDigit['create-bearer-response'])
         self.set_teid(teid)
-        self.set_sequence_number(sqn)
-    
+        self.add_ie(SuccessCause())
+        self.add_ie(BearerContext(ip = source_ip, interface = interface))
+        self.add_ie(EPSBearerID(ebi = ebi))
+        self.add_ie(Recovery())
