@@ -440,12 +440,34 @@ class ProtocolConfigurationOptions(InformationElementBase):
             out += i.get_packed()
         return out
 
-class SuccessCause(InformationElementBase):
-    def __init__(self):
+class Cause(InformationElementBase):
+    def __init__(self, cause = 16):
         InformationElementBase.__init__(self, 2)
-        self.__val = 16
+        self.__val = cause
         self._len = 2 # 2 bytes
         self.__spare = 0x00
         
     def _get_val(self):
         return struct.pack("!BB", self.__val, self.__spare)
+
+class FQCSID(InformationElementBase):
+    def __init__(self, node_id_type = 0, ip = "127.0.0.1", mcc = 222, mnc = 88):
+        InformationElementBase.__init__(self, 132)
+        if (node_id_type != 0 and  node_id_type != 2):
+            raise Exception("Unsupported node type id %d"%(node_id_type))
+        self.__node_id_type = node_id_type
+        self.__n_csids = 1
+        if self.__node_id_type == 0:
+            self.__node_id = bytearray.fromhex(IP(ip).strHex())
+        else:
+            self.__node_id = struct.pack("!L", 
+                            ((mcc*1000 + mnc) & 0xfffff000)+ 0xfffff110)
+        self.__csid = 1
+        self._len = 7
+            
+    def _get_val(self):
+        out = struct.pack(("!B"), (self.__node_id_type & 0xf0) + 0x0f & self.__n_csids)
+        out += self.__node_id
+        out += struct.pack("!H", self.__csid)
+        return out
+        return out        

@@ -1,20 +1,37 @@
 #!/usr/bin/env python
 # encoding: utf-8
-'''
-main -- shortdesc
+#       main.py
+#       
+#       Copyright 2018 Rosalia d'Alessandro 
+#                     
+#
 
-main is a description
-
-It defines classes_and_methods
-
-@author:     Rosalia d'Alessandro
-
-@copyright:  2017. All rights reserved.
-
-@license:    license
-
-@contact:    list_mailing@libero.it
-'''
+#       Redistribution and use in source and binary forms, with or without
+#       modification, are permitted provided that the following conditions are
+#       met:
+#       
+#       * Redistributions of source code must retain the above copyright
+#         notice, this list of conditions and the following disclaimer.
+#       * Redistributions in binary form must reproduce the above
+#         copyright notice, this list of conditions and the following disclaimer
+#         in the documentation and/or other materials provided with the
+#         distribution.
+#       * Neither the name of the  nor the names of its
+#         contributors may be used to endorse or promote products derived from
+#         this software without specific prior written permission.
+#       
+#       THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#       "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#       LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+#       A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+#       OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#       SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+#       LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+#       DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+#       THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+#       (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+#       OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
 
 import sys
 import os
@@ -31,6 +48,26 @@ DEFAULT_MSG_FREQ = 20
 DEFAULT_SLEEPTIME = 1
 DEBUG = 0
 
+
+##
+## GTP-C v2 BASE
+## 
+## @brief      Main file to execute the script.
+## 
+## This file can be executed to test the gtp-c v2 messages implemented in the gtp_v2_core 
+#  package
+## 
+## Use the -h option to enter the help menu and determine what to do.
+## 
+## Basic usage examples:
+##      * $ python main.py -v -c conf_file.cnf [-c conf2.cnf ...] -r <remote ip> 
+#            act as a client connecting to <remote-host-ip>
+##      
+##      * $ python main.py -sv  -c conf_file.cnf [-c conf2.cnf ...] -r <remote ip> -l <local ip>
+##      
+##           act as a server listening on <local ip> and accepting replies from <remote-host-ip>
+##
+
 def main(argv=None):
     '''Command line options.'''
 
@@ -39,7 +76,7 @@ def main(argv=None):
 
     program_version_string = '%%prog %s' % (program_version)
 
-    program_license = "Copyright 2017 Rosalia d'Alessandro\
+    program_license = "Copyright 2018 Rosalia d'Alessandro\
                 Licensed under the Apache License 2.0\
                 nhttp://www.apache.org/licenses/LICENSE-2.0"
 

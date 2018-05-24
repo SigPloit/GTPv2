@@ -1,8 +1,5 @@
-'''
-Created on 14 Sep 2017
-
-@author: lia
-'''
+#!/usr/bin/env  python
+# -*- coding: utf-8 -*-
 
 import struct
 import IPy
