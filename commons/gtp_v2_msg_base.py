@@ -246,7 +246,9 @@ class GTPV2MessageBase(object):
     ## @param      self  refers to the class itself
     ## @return     teid  TEID to set
     ##     
-    def set_teid(self, teid = bytearray(random.getrandbits(8) for i in range(3))):
+    def set_teid(self, teid = random.getrandbits(32)):
+        print teid
+        print type(teid)
         if teid != 0x00 :
             self.__t_flag = 1
             self.__teid = teid  

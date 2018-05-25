@@ -1,6 +1,6 @@
-#       delete_session.py
+#       modify_bearer.py
 #       
-#       Copyright 2018 LOAY
+#       Copyright 2018 Rosalia d'Alessandro
 #
 
 #       Redistribution and use in source and binary forms, with or without
@@ -31,69 +31,50 @@
 
 #!/usr/bin/env  python
 # -*- coding: utf-8 -*-
-from gtp_v2_core.commons.gtp_v2_msg_base import GTPV2MessageBase
 
+from gtp_v2_core.commons.gtp_v2_msg_base import GTPV2MessageBase
 from gtp_v2_core.commons.gtp_v2_commons import GTPmessageTypeDigit
 from gtp_v2_core.commons.gtp_v2_information_element_base import *
 
-
 ##
-## @brief  Class implementing a Delete Session Request message
+## @brief  Class implementing a Modify Bearer Request message
 ##
-class DeleteSessionRequest(GTPV2MessageBase):
+class DeletePDNConnectionSetRequest(GTPV2MessageBase):
     ##
     ## @brief      Init method
     ##
     ## @param      self  refers to the class itself
-    ## @param      teid  GTP V2 Tunnel Endpoint Identifier 
-    ## @param      mcc  mobile country code
-    ## @param      mcc  mobile network code    
-    ## @param      lac  location area code
-    ## @param      rac  routing area code         
-    ## @param      tac  Type allocation Code       
-    ## @param      ecgi Eutran Cell Global Identifier 
-    ## @param      sac  Service Area Code     
-    ## @param      cgi Cell Global Identifier  
+    ## @param      teid  refers to the tunnel end point identifier to set
+    ## @param      source_ip  source ip to set into information elements
+    ## @param      sqn  sequence number to set into GTP HDR
     ## @param      ebi  refers to EPSBearerID. Default 5
-    ## 
-    def __init__(self, teid, source_ip = "127.0.0.1", ebi=5, mcc="222", 
-                 interface = 7, mnc="88", lac=2788, rac=1, tac=0, ecgi=0, sac=0, 
-                 cgi=0):
-        '''
-        Constructor
-        '''
+    ## @param      interface to use (e.g. S5/S8, S11). Default S8
+    ##
+    def __init__(self, source_ip, sqn = 0x00, nit = 0, mcc=222, mnc=88):
+        GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn, 
+            msg_type = GTPmessageTypeDigit['delete-pdn-connection-set-request'])
+        self.set_teid(0x00)
 
-        GTPV2MessageBase.__init__(self, t=0x01,
-            msg_type=GTPmessageTypeDigit['delete-session-request'])
-        self.set_teid(teid)
-        self.add_ie(EPSBearerID(ebi))
-        if interface == 10 or interface == 11:
-            self.add_ie(UserLocationInformation(mcc=mcc, mnc=mnc, lac=lac,
-                                                rac=rac, tac=tac, ecgi=ecgi,
-                                                sac=sac, cgi=cgi))
-            #This is not exactly correct. Here MME/SGSN IP should be set within 
-            #their TEID associated to the teid of the tunnel that will be deleted
-            fteid = FTeid(source_ip, interface)
-            self.add_ie(fteid)
-
-
+        self.add_ie(FQCSID(node_id_type = nit, ip = source_ip, mcc = mcc, 
+                           mnc = mnc))      
+        
 ##
-## @brief  Class implementing a Delete Session Response message
-##
-class DeleteSessionResponse(GTPV2MessageBase):
+## @brief  Class implementing a Modify Bearer Response message
+##  
+class DeletePDNConnectionSetResponse(GTPV2MessageBase):
     ##
     ## @brief      Init method
     ##
     ## @param      self  refers to the class itself
-    ## @param      teid Tunnel Endpoint Identifier to set
-    ## @param      source_ip  source ip to set into information elements 
-    ## @param      sqn  GTP header sequence number to set       
-    ##
-    def __init__(self, teid, sqn = 0x00):
+    ## @param      teid  refers to the tunnel end point identifier to set
+    ## @param      source_ip  source ip to set into information elements
+    ## @param      sqn  sequence number to set into GTP HDR
+    ## 
+    def __init__(self, sqn = 0x00):
         '''
         Constructor
         '''
         GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn,
-            msg_type = GTPmessageTypeDigit['delete-session-response'])
-        self.set_teid(teid)
+            msg_type = GTPmessageTypeDigit['delete-pdn-connection-set-response'])
+        self.set_teid(0x00)
         self.add_ie(Cause())
