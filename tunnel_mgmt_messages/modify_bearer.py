@@ -54,14 +54,20 @@ class ModifyBearerRequest(GTPV2MessageBase):
         GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn, 
             msg_type = GTPmessageTypeDigit['modify-bearer-request'])
         self.set_teid(teid)
+        
         self.add_ie(BearerContext(ip = source_ip, interface = interface))
+        
         self.add_ie(EPSBearerID(ebi = ebi))
+
         self.add_ie(FQCSID(node_id_type = nit, ip = source_ip, mcc = mcc, 
                            mnc = mnc))  
         if fteid :
             fteid = FTeid(source_ip, interface)
             self.__fteid = fteid.get_teid()
-            self.add_ie(fteid)      
+            self.add_ie(fteid)     
+    
+    def get_fteid(self):
+        return self.__fteid             
         
 ##
 ## @brief  Class implementing a Modify Bearer Response message

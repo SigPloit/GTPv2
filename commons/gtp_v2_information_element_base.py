@@ -347,10 +347,10 @@ class PDNAddressAllocation(InformationElementBase):
             self.__ip = int(IP(ip).strHex(), 16)
         elif pdn_type == 2:
             self._len = 18
-            self.__ip = bytearray.fromhex(IP(ip).strHex())
+            self.__ip = bytearray.fromhex(IP(ip).strHex()[2:])
         elif pdn_type == 3:
             self._len = 22
-            self.__ip = bytearray.fromhex(IP(ip).strHex())
+            self.__ip = bytearray.fromhex(IP(ip).strHex()[2:])
         else:
             raise Exception('Invalid PDN Type %d'%(pdn_type))
         self.__pdn_type = pdn_type
@@ -458,7 +458,7 @@ class FQCSID(InformationElementBase):
         self.__node_id_type = node_id_type
         self.__n_csids = 1
         if self.__node_id_type == 0:
-            self.__node_id = bytearray.fromhex(IP(ip).strHex())
+            self.__node_id = bytearray.fromhex(IP(ip).strHex()[2:])           
         else:
             self.__node_id = struct.pack("!L", 
                             ((mcc*1000 + mnc) & 0xfffff000)+ 0xfffff110)
