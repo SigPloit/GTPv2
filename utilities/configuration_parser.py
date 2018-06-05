@@ -135,7 +135,7 @@ class parseConfigs(object):
             logWarn("3gpp message list empty",
                     verbose = self.__verbose, 
                     TAG = "parseConfig")            
-            return   
+            return  [] 
         self.__configs['3gpp_messages_list'] = confobj['GENERIC']['3gpp_messages_list']
                  
         if 'IES' not in confobj.sections:
@@ -144,7 +144,7 @@ class parseConfigs(object):
         if 'interface' not in confobj['GENERIC']:
             raise ConfigObjError('Value "GENERIC.interface" is required')
         self.__configs['interface'] = confobj['GENERIC']['interface']
-                    
+            
         for msg_type in self.__configs['3gpp_messages_list']:
             if int(msg_type) == GTPmessageTypeDigit["create-session-request"] :
                 i = 0
@@ -189,16 +189,16 @@ class parseConfigs(object):
                 rac = int(confobj['IES']['rac'])
                 ebi = int(confobj['IES']['ebi'])  
                 interface = int(self.__configs['interface'])
-                source_ip = confobj['GENERIC']['source_ip']               
+                          
                 for t in confobj['GENERIC']['teid']:
-                    msgs.append(DeleteSessionRequest(teid = int(t, 16),
+                    msgs.append(DeleteSessionRequest(int(t, 16),
+                        source_ip = confobj['GENERIC']['source_ip'], 
                         mcc = mcc, 
                         mnc = mnc,
                         lac = lac,
                         rac = rac,
                         ebi = ebi,
-                        interface = interface,
-                        souce_ip = source_ip
+                        interface = interface
                         )
                     )
                                         

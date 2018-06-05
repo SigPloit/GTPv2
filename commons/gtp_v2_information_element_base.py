@@ -459,9 +459,9 @@ class FQCSID(InformationElementBase):
         self.__n_csids = 1
         if self.__node_id_type == 0:
             self.__node_id = bytearray.fromhex(IP(ip).strHex()[2:])           
-        else:
-            self.__node_id = struct.pack("!L", 
-                            ((mcc*1000 + mnc) & 0xfffff000)+ 0xfffff110)
+        else:        
+            self.__node_id = struct.pack("!L",
+                (((mcc*1000 + mnc) & 0x000fffff) << 12) | 0x00000110)
         self.__csid = 1
         self._len = 7
             

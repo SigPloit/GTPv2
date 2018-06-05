@@ -65,6 +65,7 @@ class DeleteSessionRequest(GTPV2MessageBase):
 
         GTPV2MessageBase.__init__(self, t=0x01,
             msg_type=GTPmessageTypeDigit['delete-session-request'])
+        
         self.set_teid(teid)
         self.add_ie(EPSBearerID(ebi))
         if interface == 10 or interface == 11:

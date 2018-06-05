@@ -61,6 +61,7 @@ class ModifyBearerRequest(GTPV2MessageBase):
 
         self.add_ie(FQCSID(node_id_type = nit, ip = source_ip, mcc = mcc, 
                            mnc = mnc))  
+        self.__fteid = 0x00000000
         if fteid :
             fteid = FTeid(source_ip, interface)
             self.__fteid = fteid.get_teid()
