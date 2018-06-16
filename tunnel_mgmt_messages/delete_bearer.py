@@ -52,7 +52,7 @@ class DeleteBearerRequest(GTPV2MessageBase):
     ## @param      interface to use (e.g. S5/S8, S11). Default S8
     ##
     def __init__(self, teid, source_ip, nit = 0, sqn = 0x00, ebi = 5, interface = 7, 
-                 cause = 3, mcc=222, mnc=88):
+                 cause = 3, mcc=333, mnc=88):
         GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn, 
             msg_type = GTPmessageTypeDigit['delete-bearer-request'])
         self.set_teid(teid)
@@ -75,7 +75,7 @@ class DeleteBearerResponse(GTPV2MessageBase):
     ## @param      ebi  refers to EPSBearerID. Default 5
     ## @param      interface to use (e.g. S5/S8, S11). Default S8
     ## 
-    def __init__(self, teid, sqn = 0x00):
+    def __init__(self, teid, nit = 0, source_ip = '127.0.0.1', sqn = 0x00):
         '''
         Constructor
         '''
@@ -83,4 +83,4 @@ class DeleteBearerResponse(GTPV2MessageBase):
             msg_type = GTPmessageTypeDigit['delete-bearer-response'])
         self.set_teid(teid)
         self.add_ie(Cause())
-        self.add_ie(FQCSID(node_id_type = 0, ip = "127.0.0.1"))        
+        self.add_ie(FQCSID(node_id_type = nit, ip = source_ip))        

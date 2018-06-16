@@ -144,7 +144,9 @@ class parseConfigs(object):
         if 'interface' not in confobj['GENERIC']:
             raise ConfigObjError('Value "GENERIC.interface" is required')
         self.__configs['interface'] = confobj['GENERIC']['interface']
-            
+        recovery = True
+        if 'recovery' in  confobj['IES']:
+            recovery = int(confobj['IES']['recovery']) 
         for msg_type in self.__configs['3gpp_messages_list']:
             if int(msg_type) == GTPmessageTypeDigit["create-session-request"] :
                 i = 0
@@ -164,7 +166,8 @@ class parseConfigs(object):
                         phone= confobj['IES']['msisdn'], 
                         imei = confobj['IES']['imei'], 
                         rat_type = confobj['IES']['rat_type'],
-                        ebi = int(confobj['IES']['ebi'])
+                        ebi = int(confobj['IES']['ebi']),
+                        recovery = recovery
                         )
                     )
                     i += 1

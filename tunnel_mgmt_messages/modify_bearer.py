@@ -50,7 +50,7 @@ class ModifyBearerRequest(GTPV2MessageBase):
     ## @param      interface to use (e.g. S5/S8, S11). Default S8
     ##
     def __init__(self, teid, source_ip, sqn = 0x00, ebi = 5, interface = 7,
-                 nit = 0, mcc=222, mnc=88, fteid = False):
+                 nit = 0, mcc=333, mnc=88, fteid = False):
         GTPV2MessageBase.__init__(self, t = 0x01, sequence = sqn, 
             msg_type = GTPmessageTypeDigit['modify-bearer-request'])
         self.set_teid(teid)

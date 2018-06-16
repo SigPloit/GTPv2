@@ -56,7 +56,7 @@ class DeleteSessionRequest(GTPV2MessageBase):
     ## @param      cgi Cell Global Identifier  
     ## @param      ebi  refers to EPSBearerID. Default 5
     ## 
-    def __init__(self, teid, source_ip = "127.0.0.1", ebi=5, mcc="222", 
+    def __init__(self, teid, source_ip = "127.0.0.1", ebi=5, mcc="333", 
                  interface = 7, mnc="88", lac=2788, rac=1, tac=0, ecgi=0, sac=0, 
                  cgi=0):
         '''
