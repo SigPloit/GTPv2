@@ -36,7 +36,47 @@
 ##sudo apt-get install python-pip python-wheel
 ##sudo pip install numpy 
 
-from numpy import uint32, log2
+from numpy import uint32, log2, unique
+import time
+from os import path
+
+class TeidFixedPart(object):
+    '''
+    classdocs
+    '''
+        
+    def __init__(self):
+        '''
+        Constructor
+        '''        
+        
+    def teidFixedPart(self, teids):
+        if teids is None or len(teids) == 0 :
+            return 0, "No teids list provided"
+        tmp = unique(teids).tolist()
+        
+        i = 0
+        common_prefixs = []
+        sub_set = tmp[i:i+2]
+        run = True
+        max_iter = len(tmp)
+        while run :            
+            cp = path.commonprefix(sub_set)
+            if cp == "" or cp == "0x":
+                common_prefixs.append(sub_set[0])
+                sub_set = tmp[i:i+2]
+                i = i + 1
+            else :
+                i += 2
+                if i < max_iter :
+                    sub_set = [cp, tmp[i]]
+                else:  
+                    common_prefixs.append(cp)
+                    run = False              
+                                        
+        return common_prefixs    
+
+
 
 class TeidPredictabilityIndex(object):
     '''
@@ -122,7 +162,7 @@ class TeidPredictabilityIndex(object):
             return "Formidable"
         if seq_index < 16 :
             return  "Worthy challenge"
-        return "Good luck!";
+        return "Teids not consecutives!";
     
     def teidPredictabilityIndex(self, teids):
         if teids is None or len(teids) == 0 :
