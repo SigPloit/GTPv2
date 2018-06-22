@@ -74,7 +74,6 @@ class parseConfigs(object):
                    '3gpp_messages_list': [],
                    'IES': []}
         self.__gtp_port = 2123
-        self.__version = 0x02
         self.__verbose = verbose
         self.__parseConfigs()
         
@@ -86,9 +85,7 @@ class parseConfigs(object):
                 
         if 'port' in confobj['GENERIC']:
             self.__gtp_port = int(confobj['GENERIC']['port']) 
-        
-        if 'version' in confobj['GENERIC']:
-            self.__version= int(confobj['GENERIC']['version'])
+
         
         if 'num_msg' in confobj['GENERIC'] :
             self.__num_msg = int(confobj['GENERIC']['num_msg'])
@@ -110,12 +107,12 @@ class parseConfigs(object):
             if int(msg_type) == GTPmessageTypeDigit["echo-request"] :
                 i = 0
                 while i < self.__num_msg :                
-                    msgs.append(EchoRequest(version = self.__version))
+                    msgs.append(EchoRequest())
                     i += 1
             elif int(msg_type) == GTPmessageTypeDigit["echo-response"]  :
                 i = 0
                 while i < self.__num_msg :                 
-                    msgs.append(EchoResponse(1, version = self.__version))
+                    msgs.append(EchoResponse(1))
                     i += 1                    
             else: 
                 raise Exception("%s:%s - Invalid base msg type "
@@ -338,6 +335,3 @@ class parseConfigs(object):
     
     def get_gtp_port(self):
         return self.__gtp_port
-    
-    def get_version(self):
-        return self.__version   

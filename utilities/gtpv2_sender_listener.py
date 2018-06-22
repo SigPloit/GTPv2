@@ -26,6 +26,8 @@ class SenderListener(threading.Thread):
         if open_sock is None :
             print "Working in client mode"
             self.sock = socket(AF_INET, SOCK_DGRAM)
+            self.sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            self.sock.bind(('0.0.0.0', self.gtp_port))            
         else :
             print "Working in server mode"
             self.sock = open_sock
